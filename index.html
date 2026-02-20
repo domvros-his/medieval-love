@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ο Ιππότης και ο Πύργος της Σιωπής</title>
+    <style>
+        :root {
+            --book-width: 450px;
+            --book-height: 650px;
+            --paper-color: #fdfcf0;
+            --cover-color: #4a3728;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            perspective: 2000px;
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+        }
+
+        /* Το κοντέινερ που κρατάει το βιβλίο κεντραρισμένο */
+        .book-container {
+            position: relative;
+            width: var(--book-width);
+            height: var(--book-height);
+            transition: transform 0.8s ease-in-out;
+        }
+
+        /* Η κλάση που θα μετακινεί το βιβλίο όταν ανοίγει */
+        .book-opened {
+            transform: translateX(50%);
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transform-origin: left;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            cursor: pointer;
+        }
+
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 3px 0px 20px rgba(0,0,0,0.1);
+            border: 1px solid #d1d1d1;
+            box-sizing: border-box;
+        }
+
+        .front { background-color: var(--paper-color); z-index: 2; }
+        .back { 
+            background-color: var(--paper-color); 
+            transform: rotateY(180deg); 
+            z-index: 1; 
+        }
+
+        .page.flipped { transform: rotateY(-180deg); }
+
+        .image-box {
+            width: 100%;
+            height: 55%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #eee;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .image-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .text-box {
+            padding: 20px 25px;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #2e2e2e;
+            flex-grow: 1;
+            text-align: justify;
+        }
+
+        /* Footer μέσα στις σελίδες */
+        .inner-footer {
+            font-size: 0.65rem;
+            color: #999;
+            text-align: center;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .cover {
+            background-color: var(--cover-color) !important;
+            color: #d4af37;
+            text-align: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        h1 { border: 4px double #d4af37; padding: 15px; font-size: 1.6rem; }
+
+        .credits-page {
+            font-size: 0.85rem;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="book-container" id="bookContainer">
+    
+    <div class="page" onclick="flipPage(this)">
+        <div class="front cover">
+            <h1>Ο Ιππότης και ο Πύργος της Σιωπής</h1>
+            <p>Πατήστε για να ξεκινήσετε</p>
+        </div>
+        <div class="back">
+            <div class="image-box"><img src="1.png"></div>
+            <div class="text-box"><p>Ο Ροβέρτος ήταν ο νεότερος ιππότης του κάστρου. Δεν είχε ακόμα κερδίσει μεγάλη δόξα· μόνο λίγες μικρές μάχες και πολλές ώρες εξάσκησης.</p></div>
+            <div class="inner-footer">Δημιουργία: Παναγιώτης Δόμβρος</div>
+        </div>
+    </div>
+
+    <div class="page" onclick="flipPage(this)">
+        <div class="front">
+            <div class="image-box"><img src="2.png"></div>
+            <div class="text-box"><p>Είδε στον ψηλό πύργο την Αλίνα. Τα μάτια της ήταν ήρεμα, αλλά θλιμμένα. Έμαθε πως σύντομα θα παντρευόταν έναν άντρα που δεν είχε διαλέξει η ίδια.</p></div>
+            <div class="inner-footer">Δημιουργία: Παναγιώτης Δόμβρος</div>
+        </div>
+        <div class="back">
+            <div class="image-box"><img src="3.png"></div>
+            <div class="text-box"><p>Η μάχη στο δάσος ήταν σκληρή. Ο Ροβέρτος χτυπήθηκε στον ώμο, όμως σηκώθηκε ξανά και συνέχισε ώσπου το πέρασμα άνοιξε.</p></div>
+            <div class="inner-footer">Δημιουργία: Παναγιώτης Δόμβρος</div>
+        </div>
+    </div>
+
+    <div class="page" onclick="flipPage(this)">
+        <div class="front">
+            <div class="image-box"><img src="4.png"></div>
+            <div class="text-box"><p>Η Αλίνα τον είδε από το παράθυρο. Δεν χαμογέλασε, αλλά έγειρε ελαφρά το κεφάλι της, σαν να τον ευχαριστούσε σιωπηλά. Αυτό του έφτανε.</p></div>
+            <div class="inner-footer">Δημιουργία: Παναγιώτης Δόμβρος</div>
+        </div>
+        <div class="back">
+            <div class="image-box"><img src="5.png"></div>
+            <div class="text-box"><p>Τον χειμώνα στα βουνά, ο Ροβέρτος έδωσε τη δική του κάπα σε έναν νεαρό υπηρέτη. Γύρισε στο κάστρο πιο αδύνατος αλλά πιο σεβαστός.</p></div>
+            <div class="inner-footer">Δημιουργία: Παναγιώτης Δόμβρος</div>
+        </div>
+    </div>
+
+    <div class="page" onclick="flipPage(this)">
+        <div class="front">
+            <div class="image-box"><img src="6.png"></div>
+            <div class="text-box"><p>«Υπάρχουν πράγματα που αξίζουν τον φόβο», της είπε στον κήπο. Ήξερε πως ο δρόμος της ήταν ήδη αποφασισμένος. Εκείνη το κατάλαβε από τη σιωπή του.</p></div>
+            <div class="inner-footer">Δημιουργία: Παναγιώτης Δόμβρος</div>
+        </div>
+        <div class="back">
+            <div class="image-box"><img src="7.png"></div>
+            <div class="text-box"><p>Όταν ανακοινώθηκε ο γάμος, το κάστρο ετοιμάστηκε για γιορτή. Εκείνος, όμως, ένιωθε την καρδιά του βαριά.</p></div>
+            <div class="inner-footer">Δημιουργία: Παναγιώτης Δόμβρος</div>
+        </div>
+    </div>
+
+    <div class="page" onclick="flipPage(this)">
+        <div class="front">
+            <div class="image-box"><img src="8.png"></div>
+            <div class="text-box"><p>«Μου αρκεί που σας γνώρισα», είπε την τελευταία νύχτα. Δεν υπήρχε θυμός μέσα του, μόνο μια ήσυχη λύπη.</p></div>
+            <div class="inner-footer">Δημιουργία: Παναγιώτης Δόμβρος</div>
+        </div>
+        <div class="back">
+            <div class="image-box"><img src="9.png"></div>
+            <div class="text-box"><p>Έφυγε πριν την τελετή. Στο σακούλι του είχε μόνο το σπαθί του και ένα μικρό κομμάτι υφάσματος από το μανίκι της Αλίνας.</p></div>
+            <div class="inner-footer">Δημιουργία: Παναγιώτης Δόμβρος</div>
+        </div>
+    </div>
+
+    <div class="page" onclick="flipPage(this)">
+        <div class="front">
+            <div class="image-box"><img src="10.png"></div>
+            <div class="text-box"><p>Κάθε νίκη του ήταν αφιερωμένη σε εκείνη. Ήξερε πως δεν θα γύριζε ποτέ, αλλά η σκέψη της τον έκανε να συνεχίζει.</p></div>
+            <div class="inner-footer">Δημιουργία: Παναγιώτης Δόμβρος</div>
+        </div>
+        <div class="back cover credits-page">
+            <h2>ΤΕΛΟΣ</h2>
+            <p style="font-style: italic; margin-bottom: 30px;">"Μερικοί έρωτες είναι γραμμένοι για να δίνουν δύναμη σ’ εκείνους που προχωρούν μόνοι."</p>
+            <hr style="border: 0; border-top: 1px solid #d4af37; width: 50%;">
+            <p><strong>Δημιουργία:</strong><br>
+            Παναγιώτης Δόμβρος<br>
+            Εκπαιδευτικός Αγγλικής Γλώσσας & Θεατρολόγος<br>
+            Διευθυντής 1ου Γυμνασίου Πυλαίας</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const pages = document.querySelectorAll('.page');
+    const container = document.getElementById('bookContainer');
+    
+    function flipPage(pageElement) {
+        const index = Array.from(pages).indexOf(pageElement);
+        
+        if (pageElement.classList.contains('flipped')) {
+            pageElement.classList.remove('flipped');
+            setTimeout(() => { 
+                pageElement.style.zIndex = pages.length - index; 
+            }, 500);
+        } else {
+            pageElement.classList.add('flipped');
+            pageElement.style.zIndex = 100 + index;
+        }
+
+        // Έλεγχος αν το βιβλίο είναι ανοιχτό για μετατόπιση
+        const flippedCount = document.querySelectorAll('.page.flipped').length;
+        if (flippedCount > 0) {
+            container.classList.add('book-opened');
+        } else {
+            container.classList.remove('book-opened');
+        }
+    }
+
+    // Keybindings
+    document.addEventListener('keydown', (e) => {
+        const flippedPages = document.querySelectorAll('.page.flipped');
+        if (e.key === 'ArrowRight' && flippedPages.length < pages.length) {
+            flipPage(pages[flippedPages.length]);
+        } else if (e.key === 'ArrowLeft' && flippedPages.length > 0) {
+            flipPage(flippedPages[flippedPages.length - 1]);
+        }
+    });
+
+    // Initial Z-Index
+    pages.forEach((page, index) => {
+        page.style.zIndex = pages.length - index;
+    });
+</script>
+
+</body>
+</html>
