@@ -10,6 +10,7 @@
             --book-height: 650px;
             --paper-color: #fdfcf0;
             --cover-color: #4a3728;
+            --gold: #d4af37;
         }
 
         body {
@@ -24,7 +25,27 @@
             overflow: hidden;
         }
 
-        /* Το κοντέινερ που κρατάει το βιβλίο κεντραρισμένο */
+        /* Κουμπί Ήχου */
+        #musicToggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(74, 55, 40, 0.8);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: serif;
+            transition: all 0.3s;
+        }
+
+        #musicToggle:hover {
+            background: var(--gold);
+            color: white;
+        }
+
         .book-container {
             position: relative;
             width: var(--book-width);
@@ -32,7 +53,6 @@
             transition: transform 0.8s ease-in-out;
         }
 
-        /* Η κλάση που θα μετακινεί το βιβλίο όταν ανοίγει */
         .book-opened {
             transform: translateX(50%);
         }
@@ -98,7 +118,6 @@
             text-align: justify;
         }
 
-        /* Footer μέσα στις σελίδες */
         .inner-footer {
             font-size: 0.65rem;
             color: #999;
@@ -109,13 +128,13 @@
 
         .cover {
             background-color: var(--cover-color) !important;
-            color: #d4af37;
+            color: var(--gold);
             text-align: center;
             justify-content: center;
             padding: 30px;
         }
 
-        h1 { border: 4px double #d4af37; padding: 15px; font-size: 1.6rem; }
+        h1 { border: 4px double var(--gold); padding: 15px; font-size: 1.6rem; }
 
         .credits-page {
             font-size: 0.85rem;
@@ -125,6 +144,12 @@
     </style>
 </head>
 <body>
+
+<audio id="bgMusic" loop>
+    <source src="audio.mp3" type="audio/mpeg">
+</audio>
+
+<button id="musicToggle" onclick="toggleMusic(event)">🔊 Μουσική: ON</button>
 
 <div class="book-container" id="bookContainer">
     
@@ -201,7 +226,7 @@
         <div class="back cover credits-page">
             <h2>ΤΕΛΟΣ</h2>
             <p style="font-style: italic; margin-bottom: 30px;">"Μερικοί έρωτες είναι γραμμένοι για να δίνουν δύναμη σ’ εκείνους που προχωρούν μόνοι."</p>
-            <hr style="border: 0; border-top: 1px solid #d4af37; width: 50%;">
+            <hr style="border: 0; border-top: 1px solid var(--gold); width: 50%;">
             <p><strong>Δημιουργία:</strong><br>
             Παναγιώτης Δόμβρος<br>
             Εκπαιδευτικός Αγγλικής Γλώσσας & Θεατρολόγος<br>
@@ -214,8 +239,20 @@
 <script>
     const pages = document.querySelectorAll('.page');
     const container = document.getElementById('bookContainer');
+    const audio = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicToggle');
     
+    // Ρύθμιση έντασης (0.1 έως 1.0)
+    audio.volume = 0.2; 
+    let musicStarted = false;
+
     function flipPage(pageElement) {
+        // Αυτόματη εκκίνηση μουσικής στο πρώτο κλικ
+        if (!musicStarted) {
+            audio.play().catch(e => console.log("Αναμονή για αλληλεπίδραση χρήστη"));
+            musicStarted = true;
+        }
+
         const index = Array.from(pages).indexOf(pageElement);
         
         if (pageElement.classList.contains('flipped')) {
@@ -228,7 +265,6 @@
             pageElement.style.zIndex = 100 + index;
         }
 
-        // Έλεγχος αν το βιβλίο είναι ανοιχτό για μετατόπιση
         const flippedCount = document.querySelectorAll('.page.flipped').length;
         if (flippedCount > 0) {
             container.classList.add('book-opened');
@@ -237,8 +273,26 @@
         }
     }
 
-    // Keybindings
+    // Λειτουργία κουμπιού μουσικής
+    function toggleMusic(event) {
+        event.stopPropagation(); // Εμποδίζει το γύρισμα σελίδας όταν πατάμε το κουμπί
+        if (audio.paused) {
+            audio.play();
+            musicBtn.innerText = "🔊 Μουσική: ON";
+            musicStarted = true;
+        } else {
+            audio.pause();
+            musicBtn.innerText = "🔇 Μουσική: OFF";
+        }
+    }
+
     document.addEventListener('keydown', (e) => {
+        // Εκκίνηση μουσικής και με το πληκτρολόγιο
+        if (!musicStarted) {
+            audio.play().catch(e => {});
+            musicStarted = true;
+        }
+
         const flippedPages = document.querySelectorAll('.page.flipped');
         if (e.key === 'ArrowRight' && flippedPages.length < pages.length) {
             flipPage(pages[flippedPages.length]);
@@ -247,7 +301,6 @@
         }
     });
 
-    // Initial Z-Index
     pages.forEach((page, index) => {
         page.style.zIndex = pages.length - index;
     });
